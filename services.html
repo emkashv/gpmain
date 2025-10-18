@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Услуги — Sleep Support</title>
+  <style>
+    :root{
+      --accent:#6c63ff;
+      --card-bg:#ffffff;
+      --bg1:#f7f8ff;
+      --text:#0f1724;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,var(--bg1),#ffffff);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:36px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .container{
+      width:100%;
+      max-width:1100px;
+      position:relative;
+    }
+    .back-btn{
+      position:absolute;
+      right:18px;
+      top:18px;
+      text-decoration:none;
+      color:inherit;
+      font-weight:600;
+      padding:8px 12px;
+      border-radius:10px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      transition:background .18s,transform .12s;
+    }
+    .back-btn:hover{background:rgba(12,14,24,0.05); transform:translateY(-2px)}
+
+    h1{margin:6px 0 22px;font-size:28px;text-align:center;}
+
+    .cards{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:20px;
+    }
+
+    .card{
+      background:var(--card-bg);
+      border-radius:14px;
+      padding:20px;
+      min-height:220px;
+      width:100%;
+      max-width:600px;
+      box-shadow:0 8px 24px rgba(16,24,40,0.06);
+      transition:transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      overflow:hidden;
+    }
+    .card:focus{outline:3px solid rgba(108,99,255,0.12)}
+    .card:hover{transform:scale(1.04); box-shadow:0 18px 40px rgba(16,24,40,0.12); z-index:2}
+
+    .title{font-weight:700; font-size:18px; margin-bottom:8px}
+    .excerpt{color:#454f5b; line-height:1.45; flex:1}
+    .more{margin-top:14px; font-weight:700; color:var(--accent)}
+
+    /* overlay */
+    .fade-backdrop{
+      position:fixed; inset:0; background:rgba(12,14,24,0.36); z-index:998;
+      display:none; opacity:0; transition:opacity .24s;
+    }
+    .fade-backdrop.show{display:block; opacity:1}
+
+    .overlay{
+      position:fixed; inset:0; display:none; align-items:flex-start; justify-content:center; z-index:999; padding:36px; overflow:auto;
+      transform:scale(0.08); opacity:0; transition:transform .45s cubic-bezier(.2,.9,.2,1), opacity .28s;
+      -webkit-backdrop-filter: blur(0.4px);
+    }
+    .overlay.visible{display:flex; transform:scale(1); opacity:1}
+
+    .panel{
+      background:#fff; width:100%; max-width:920px; border-radius:12px; padding:26px 28px; box-shadow:0 30px 70px rgba(16,24,40,0.14); position:relative;
+    }
+    .close-btn{
+      position:absolute; right:12px; top:12px; border:0; background:transparent; font-size:20px; cursor:pointer; padding:8px; border-radius:8px;
+    }
+    .close-btn:hover{background:rgba(0,0,0,0.04)}
+
+    .content h2{margin:6px 0 10px}
+    .content p{color:#374151; line-height:1.55}
+    .checklist{list-style:none; padding:0; margin:12px 0 0}
+    .checklist li{position:relative; padding-left:26px; margin:9px 0; color:#111}
+    .checklist li::before{content:'✔'; position:absolute; left:0; top:0; color:green}
+
+    .footer-note{margin-top:14px; color:#6b7280}
+
+    .muted{color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back-btn" href="index.html" title="Вернуться на главную">← Назад</a>
+
+    <h1>Услуги</h1>
+
+    <div class="cards" id="cards">
+      <div class="card" data-index="0" tabindex="0" role="button" aria-pressed="false">
+        <div class="title">Пакет «Спи всю ночь»</div>
+        <div class="excerpt">Для мам, которые хотят не просто наладить режим, но и обучить малыша самостоятельному засыпанию — мягко, бережно и с моей полной поддержкой.</div>
+        <div class="more">Подробнее →</div>
+      </div>
+
+      <div class="card" data-index="2" tabindex="0" role="button" aria-pressed="false">
+        <div class="title">Разовая консультация</div>
+        <div class="excerpt">Для мам, которым нужен быстрый разбор ситуации и пошаговый план действий без длительного сопровождения.</div>
+        <div class="more">Подробнее →</div>
+      </div>
+
+      <div class="card" data-index="1" tabindex="0" role="button" aria-pressed="false">
+        <div class="title">Пакет «Индивидуальное сопровождение — 7 дней»</div>
+        <div class="excerpt">Для мам, уставших от бесконечных пробуждений и хаоса в ритме дня. Ты не остаёшься одна — я каждый день рядом, чтобы помочь наладить сон малыша.</div>
+        <div class="more">Подробнее →</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fade-backdrop" id="backdrop"></div>
+
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true">
+      <button class="close-btn" id="closeBtn" aria-label="Закрыть">✕</button>
+      <div class="content" id="overlayContent"></div>
+    </div>
+  </div>
+
+  <script>
+    const packages = [
+      {
+        title: 'Пакет «Спи всю ночь»',
+        intro: 'Для мам, которые хотят не просто наладить режим, но и обучить малыша самостоятельному засыпанию — мягко, бережно и с моей полной поддержкой.',
+        items: [
+          'Знакомство и основная консультация — разбор ошибок, индивидуальный план.',
+          'Анализ анкеты — подробный разбор ритма дня.',
+          'Разработка плана по обучению СЗ — мягкое внедрение навыка самостоятельного засыпания.',
+          'Поддержка мамы 2 недели — ежедневная помощь и ответы на все вопросы.',
+          'Помощь в корректировке режима — решение всех сопутствующих проблем.',
+          'Ежедневные рекомендации — вечерняя корректировка под малыша.',
+          'Заключительная консультация — закрепление результатов и план на будущее.'
+        ],
+      },
+
+      {
+        title: 'Пакет «Индивидуальное сопровождение — 7 дней»',
+        intro: 'Для мам, уставших от бесконечных пробуждений и хаоса в ритме дня. Ты не остаёшься одна — я каждый день рядом, чтобы помочь наладить сон малыша.',
+        items: [
+          'Знакомство и основная консультация — разбор ошибок, создание индивидуального плана.',
+          'Анализ анкеты — детальный разбор ритма дня и сна.',
+          'Поддержка мамы 7 дней — ответы на вопросы и поддержка ежедневно.',
+          'Помощь в корректировке режима — решение проблем: перегулы, скачки роста, короткий дневной сон, частые ночные пробуждения.',
+          'Ежедневные рекомендации — вечерняя корректировка ритма под малыша.',
+          'Д̶о̶л̶г̶о̶с̶р̶о̶ч̶н̶а̶я̶ ̶п̶о̶д̶д̶е̶р̶ж̶к̶а̶ ̶(̶б̶о̶л̶е̶е̶ ̶7̶ ̶д̶н̶е̶й̶)̶',
+          '̶а̶к̶л̶ю̶ч̶и̶т̶е̶л̶ь̶н̶а̶я̶ ̶к̶о̶н̶с̶у̶л̶ь̶т̶а̶ц̶и̶я̶',
+          'б̶у̶ч̶е̶н̶и̶е̶ ̶с̶а̶м̶о̶с̶т̶о̶я̶т̶е̶л̶ь̶н̶о̶м̶у̶ ̶з̶а̶с̶ы̶п̶а̶н̶и̶ю̶ ̶(̶С̶З)',
+      ]
+      },
+
+      {
+        title: 'Разовая консультация',
+        intro: 'Для мам, которым нужен быстрый разбор ситуации и пошаговый план действий без длительного сопровождения.',
+        items: [
+          'Разбор анкеты — точный анализ текущего состояния.',
+          'Индивидуальные рекомендации — корректировка ритма дня и сна.',
+          'Подготовительный план — уход от сильных ассоциаций.',
+          'Обратная связь в течение дня консультации.',
+          'Поддержка после дня консультации.',
+          'Ежедневные корректировки ритма.',
+          'Обучение самостоятельному засыпанию (СЗ).'
+        ],
+      }
+    ];
+
+    const cards = document.querySelectorAll('.card');
+    const overlay = document.getElementById('overlay');
+    const overlayContent = document.getElementById('overlayContent');
+    const backdrop = document.getElementById('backdrop');
+    const closeBtn = document.getElementById('closeBtn');
+    let isOpen = false;
+
+    function buildList(items){
+      return '<ul class="checklist">' + items.map(i => `<li>${i}</li>`).join('') + '</ul>';
+    }
+
+    function openCard(idx, cardEl){
+      if(isOpen) return;
+      const pkg = packages[idx];
+      overlayContent.innerHTML = `<h2>${pkg.title}</h2><p>${pkg.intro}</p>` + buildList(pkg.items) + (pkg.note?`<p class="footer-note">${pkg.note}</p>`:'');
+
+      const rect = cardEl.getBoundingClientRect();
+      const originX = rect.left + rect.width/2;
+      const originY = rect.top + rect.height/2;
+      overlay.style.transformOrigin = `${originX}px ${originY}px`;
+
+      backdrop.classList.add('show');
+      overlay.style.display = 'flex';
+      overlay.getBoundingClientRect();
+      requestAnimationFrame(()=>{
+        overlay.classList.add('visible');
+        overlay.setAttribute('aria-hidden','false');
+      });
+
+      isOpen = true;
+    }
+
+    function closeOverlay(){
+      if(!isOpen) return;
+      overlay.classList.remove('visible');
+      backdrop.classList.remove('show');
+      overlay.setAttribute('aria-hidden','true');
+      const onEnd = (e) =>{
+        if(e.propertyName && e.propertyName.indexOf('transform') === -1) return;
+        overlay.style.display = 'none';
+        overlay.removeEventListener('transitionend', onEnd);
+      };
+      overlay.addEventListener('transitionend', onEnd);
+
+      isOpen = false;
+    }
+
+    cards.forEach((card, i)=>{
+      card.addEventListener('click', ()=> openCard(i, card));
+      card.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openCard(i, card); }
+      });
+    });
+
+    closeBtn.addEventListener('click', closeOverlay);
+    backdrop.addEventListener('click', closeOverlay);
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && isOpen) closeOverlay(); });
+
+  </script>
+</body>
+</html>

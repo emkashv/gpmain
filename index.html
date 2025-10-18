@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Сон для малыша</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-weight: bold;}
+    body {font-family: Arial, sans-serif; overflow-x: hidden;}
+
+    /* --- Блок 1 Hero --- */
+    .hero {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      background: url('https://amiproject1.my.canva.site/_assets/media/2c057da05f8bde9171977e262ac6c46e.png') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: white;
+      z-index: 1;
+      background-size: cover;
+    }
+    .hero h3 { margin: 20px; font-size: 1.5rem; }
+    .hero h1 { margin: 40px; font-size: 3rem; max-width: 500px; }
+
+    /* overlay для затемнения */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 9;
+    }
+    .overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* карточка в раскрытом виде */
+    .service-card.expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 80%;
+      max-width: 600px;
+      height: auto;
+      max-height: 80vh;
+      transform: translate(-50%, -50%) scale(1);
+      z-index: 10;
+      border-radius: 20px;
+      background: white;
+      transition: all 0.5s ease;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+
+    .service-card .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #4b0082;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 11;
+    }
+    .service-card.expanded .close-btn { display: flex; }
+
+    /* --- Блок About --- */
+    .section-about {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 80px 10%;
+      background: linear-gradient(135deg, #d8b4fe 20%, #fde68a 80%);
+      color: #4b0082;
+      min-height: 100vh;
+      gap: 40px;
+    }
+    .about-left { width: 35%; text-align: center; }
+    .about-left img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+    .about-left h4 { font-size: 1.5rem; margin-bottom: 5px; }
+    .about-left p { font-size: 1rem; margin-bottom: 20px; }
+    .connect-text { margin: 15px 0; }
+    .socials { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .socials a {
+      display: inline-block;
+      padding: 10px;
+      border-radius: 50%;
+      background: white;
+      color: #4b0082;
+      text-decoration: none;
+      font-size: 1rem;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .socials a:hover { background: #4b0082; color: white; }
+
+    .about-right { flex: 1; display: flex; flex-direction: column; gap: 40px; }
+    .about-right h5 { font-size: 1.2rem; margin-bottom: 10px; color: #4b0082; }
+    .about-right p { font-size: 1rem; line-height: 1.5; color: #4b0082; }
+
+    /* --- Блок 2 --- */
+    .section-pink {
+      display: flex;
+      align-items: center;
+      padding: 60px 10%;
+      background: #f8c8dc;
+      min-height: 100vh;
+      gap: 40px;
+    }
+    .section-pink .img-left {
+      width: 40%;
+      border-radius: 20px;
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    .section-pink .text-right {
+      flex: 1;
+      text-align: left;
+    }
+    .section-pink h2 { font-size: 2rem; margin-bottom: 20px; color: #333; }
+    .typing {
+      font-size: 1.1rem;
+      color: #444;
+      line-height: 1.6;
+      white-space: pre-line;
+      min-height: 150px;
+      border: none;
+      padding: 0;
+    }
+
+    /* --- Новая секция "Мои услуги" --- */
+    .section-yellow {
+      background: #fffbe8;
+      text-align: center;
+      padding: 100px 20px;
+    }
+    .section-yellow h2 {
+      font-size: 2.5rem;
+      color: #4b0082;
+      margin-bottom: 40px;
+    }
+    .service-btn {
+      background: #fcd34d;
+      color: #4b0082;
+      padding: 15px 45px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(.2,.9,.2,1);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .service-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.4);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    .service-btn:hover::before { transform: translateX(0); }
+    .service-btn:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.15);
+    }
+
+    /* --- Блок 3 FAQ --- */
+    .section-faq { background: #b4e0f4; color: #4b0082; padding: 80px 10%; }
+    .section-faq h2 { text-align: center; margin-bottom: 40px; font-size: 2rem; color: white; background: #4b0082; display: inline-block; padding: 10px 20px; border-radius: 10px; }
+    
+    .faq-item {
+      background: rgba(255,255,255,0.1);
+      margin: 20px 0;
+      padding: 20px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(50px);
+      color: #4b0082;
+      position: relative;
+    }
+    @media(min-width: 769px){
+      .faq-item::after {
+        content: "";
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background-color: #b19cd9;
+        transition: all 0.5s ease;
+        transform: translateX(-50%);
+      }
+      .faq-item:hover { color: #b19cd9; }
+      .faq-item:hover::after { width: 80%; }
+    }
+
+    .faq-answer { 
+      max-height: 0; 
+      overflow: hidden; 
+      transition: max-height 0.4s ease; 
+      margin-top: 10px; 
+      color: #4b0082; 
+    }
+    .faq-item.active .faq-answer { max-height: 500px; }
+
+    @media(max-width: 768px){
+      .section-about {flex-direction: column; align-items: center; text-align: center;}
+      .about-left, .about-right {width: 100%;}
+      .section-pink {flex-direction: column; text-align: center;}
+      .section-pink .img-left {width: 80%; margin: 0 0 20px 0;}
+      .text-right {text-align: center;}
+      .section-services {flex-direction: column; min-height: auto; padding: 40px 6%;}
+      .service-card { margin-bottom: 16px; }
+      .service-card.expanded { position: relative; width: 100%; height: auto; border-radius: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- overlay -->
+  <div class="overlay"></div>
+
+  <!-- Hero -->
+  <section class="hero" style="background-position: 80% 50%;">
+    <h3>Добро пожаловать</h3>
+    <h1>Сон малыша начинается здесь</h1>
+  </section>
+
+  <!-- About -->
+  <section class="section-about">
+    <div class="about-left">
+      <h4>Бла Блалова</h4>
+      <p>Sleep Consultant</p>
+      <img src="https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg" alt="Profile">
+      <div class="connect-text">Connect with me</div>
+      <div class="socials">
+        <a href="#">✉</a>
+      </div>
+    </div>
+    <div class="about-right">
+      <div>
+        <h5>About Me</h5>
+        <p>Я сертифицированный консультант по детскому сну, помогаю мамам и папам наладить режим ребёнка мягко и без стресса.</p>
+      </div>
+      <div>
+        <h5>Education</h5>
+        <p>Закончила курсы по психологии сна и младенческой физиологии, а также программу сертификации консультантов.</p>
+      </div>
+      <div>
+        <h5>Experience</h5>
+        <p>5 лет практики с семьями, более 300 довольных клиентов, множество успешных кейсов по улучшению сна малышей.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 2 -->
+  <section class="section-pink">
+    <img class="img-left" src="https://as2.ftcdn.net/v2/jpg/05/64/43/52/1000_F_564435264_owxMwYdC8rU7SZmWb7HdVVpApnDcHu2q.jpg" alt="ребёнок">
+    <div class="text-right">
+      <h2>Сон для малыша. Спокойствие для мамы</h2>
+      <p class="typing">Сон малыша — это не только его
+здоровье и развитие, но и ваше
+спокойствие, силы и радость в
+повседневной жизни...</p>
+    </div>
+  </section>
+
+  <!-- Новая секция "Мои услуги" -->
+  <section class="section-yellow">
+    <h2>Мои услуги</h2>
+    <button class="service-btn" onclick="window.location.href='services.html'">Смотреть</button>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-faq">
+    <h2>FAQ</h2>
+    <div class="faq-item">
+      <div class="faq-question">Как наладить режим сна?</div>
+      <div class="faq-answer">Регулярность — ключ. Постарайтесь ложиться и вставать в одно и то же время каждый день. Добавьте вечерние ритуалы, чтобы малыш привык к последовательности.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Нужно ли кормить ночью?</div>
+      <div class="faq-answer">Это зависит от возраста малыша. В первые месяцы ночные кормления абсолютно нормальны. С возрастом можно постепенно уменьшать количество ночных кормлений.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Как справиться с коликами?</div>
+      <div class="faq-answer">Используйте массаж животика, теплые пеленки и соблюдайте диету кормящей мамы. Также попробуйте лёгкие движения ног малыша, чтобы улучшить пищеварение.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question">Что делать, если ребёнок часто просыпается?</div>
+      <div class="faq-answer">Создайте комфортные условия: тишина, полумрак, удобная температура в комнате. Установите последовательность действий при ночном пробуждении.</div>
+    </div>
+  </section>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Параллакс Hero
+    gsap.to(".hero", {
+      scrollTrigger: { trigger: ".hero", start: "top top", scrub: 1 },
+      backgroundPosition: "50% 120%"
+    });
+
+    // Анимация появления для картинки 2-го блока
+    gsap.utils.toArray('.img-left').forEach((el) => {
+      gsap.fromTo(el,
+        { opacity: 0, x: -50 },
+        {
+          opacity: 1, x:0, duration: 1,
+          scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none reverse" }
+        }
+      );
+    });
+
+    // Анимация появления для FAQ
+    gsap.utils.toArray('.faq-item').forEach((el) => {
+      gsap.to(el, {
+        scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none reverse" },
+        opacity: 1, y: 0, duration: 1
+      });
+    });
+
+    // FAQ раскрытие
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        item.classList.toggle('active');
+      });
+    });
+
+    // Services expand/collapse
+    (function(){
+      const overlay = document.querySelector('.overlay');
+      const cards = document.querySelectorAll('.service-card');
+
+      cards.forEach(card => {
+        const closeBtn = card.querySelector('.close-btn');
+
+        card.addEventListener('click', (e) => {
+          if (e.target === closeBtn) return;
+
+          cards.forEach(c => c.classList.remove('expanded'));
+          card.classList.add('expanded');
+          overlay.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          card.classList.remove('expanded');
+          overlay.classList.remove('active');
+        });
+      });
+
+      // закрытие по overlay
+      overlay.addEventListener('click', () => {
+        document.querySelectorAll('.service-card.expanded').forEach(c => c.classList.remove('expanded'));
+        overlay.classList.remove('active');
+      });
+    })();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
